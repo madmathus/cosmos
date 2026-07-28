@@ -6,6 +6,7 @@
 #pragma config(Motor,  motorC, motorC, tmotorNXT, PIDControl, encoder)
 
 #include "speedsensor.c"
+
 // Human Interface sorter
 
 int count = 0;
@@ -114,32 +115,7 @@ void moveMotorLight() {
 	bFloatDuringInactiveMotorPWM = true;
 }
 
-/*void moveMotorLight() {
-light = SensorValue(lightSensor);
 
-if (light >= 10 && light <= 23) {
-motor[motorC] = 0;
-return;
-}
-
-bFloatDuringInactiveMotorPWM = false;
-nMaxRegulatedSpeedNxt = 1000;
-nMotorEncoderTarget[motorC] = 105;
-
-if (light > light_val) {
-motor[motorC] = 100;
-}
-else if (light < light_val) {
-motor[motorC] = -100;
-}
-
-while (nMotorRunState[motorC] != runStateIdle) {
-}
-
-motor[motorC] = 0;
-wait1Msec(100);
-bFloatDuringInactiveMotorPWM = true;
-}*/
 
 task sorter {
 	while(true) {
@@ -220,7 +196,6 @@ void basketPID(float speed) {
 	bFloatDuringInactiveMotorPWM = false;
 	nMaxRegulatedSpeedNxt = 1000;
 
-	//sets target with PID
 	nMotorEncoderTarget[motorB] = position;
 	motor[motorB] = -100;
 
@@ -249,7 +224,7 @@ task basket {
 		basketPID(speed);
 		// Formula to calculate distance
 		// 11 inches & 14.5 inches
-		// 1 m = 1250 ticks
+		// 1 m = ~1700 ticks by calculation
 
 		nxtDisplayTextLine(2, "Speed was:");
 		nxtDisplayTextLine(3, "%0.2f m/s", speed);
@@ -279,9 +254,8 @@ task flipper {
 		flipEncode = nMotorEncoder[motorA];
 
 		wait1Msec(1000);
-		// Wait
 
-		diff = 0 - flipEncode;
+		diff = -flipEncode;
 		nMotorEncoderTarget[motorA] = abs(diff);
 		motor[motorA] = 100;
 
@@ -297,6 +271,7 @@ task flipper {
 
 
 
+
 task main() {
 	startTask(sorter);
 	startTask(basket);
@@ -306,6 +281,3 @@ task main() {
 		wait1Msec(100);
 	}
 }
-
-// Signed: Rhoy Xu
-// Copyright: Rhoy Xu 2026
