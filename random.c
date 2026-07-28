@@ -242,10 +242,10 @@ task flipper {
 		bFloatDuringInactiveMotorPWM = false;
 		nMaxRegulatedSpeedNxt = 1000;
 		flipEncode = nMotorEncoder[motorA];
-		int diff = -30 - flipEncode;
+		int diff = -40 - flipEncode;
 
 		nMotorEncoderTarget[motorA] = abs(diff);
-		motor[motorA] = -100;
+		motor[motorA] = -5;
 
 		while(nMotorRunState[motorA] != runStateIdle) {
 		}
@@ -257,7 +257,7 @@ task flipper {
 
 		diff = -flipEncode;
 		nMotorEncoderTarget[motorA] = abs(diff);
-		motor[motorA] = 100;
+		motor[motorA] = 5;
 
 		while(nMotorRunState[motorA] != runStateIdle) {
 		}
@@ -273,8 +273,8 @@ task flipper {
 
 
 task main() {
-	startTask(sorter);
 	startTask(basket);
+	startTask(sorter);
 	startTask(flipper);
 
 	while (true) {
