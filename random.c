@@ -28,11 +28,11 @@ void moveMotorPos(int position) {
 		nMotorEncoderTarget[motorC] = position;
 
 		if (reverse == true) {
-			motor[motorC] = -100;
+			motor[motorC] = -35;
 			reverse = false;
 		}
 		else {
-			motor[motorC] = 100;
+			motor[motorC] = 35;
 			reverse = true;
 		}
 	}
@@ -48,11 +48,11 @@ void moveMotorPos(int position) {
 		}
 
 		if (diff > 0) {
-			motor[motorC] = 100;
+			motor[motorC] = 15;
 			reverse = !reverse;
 		}
 		else {
-			motor[motorC] = -100;
+			motor[motorC] = -15;
 			reverse = !reverse;
 		}
 	}
@@ -89,14 +89,14 @@ void moveMotorLight() {
 		}
 
 		if (diff > 0) {
-			motor[motorC] = 100;
+			motor[motorC] = 15;
 			encod = nMotorEncoder[motorC];
 			reverse = !reverse;
 
 			wait1Msec(1000);
 
 			nMotorEncoderTarget[motorC] = 105;
-			motor[motorC] = -100;
+			motor[motorC] = -15;
 			reverse = !reverse;
 			encod = nMotorEncoder[motorC];
 		}
@@ -245,7 +245,7 @@ task flipper {
 		int diff = -20 - flipEncode;
 
 		nMotorEncoderTarget[motorA] = abs(diff);
-		motor[motorA] = -15;
+		motor[motorA] = -20;
 
 		while(nMotorRunState[motorA] != runStateIdle) {
 		}
@@ -255,9 +255,9 @@ task flipper {
 
 		wait1Msec(1000);
 
-		diff = 0 - flipEncode;
+		diff = 10 - flipEncode;
 		nMotorEncoderTarget[motorA] = abs(diff);
-		motor[motorA] = 15;
+		motor[motorA] = 20;
 
 		while(nMotorRunState[motorA] != runStateIdle) {
 		}
@@ -272,6 +272,8 @@ task flipper {
 
 
 task main() {
+	startTask(basket);
+	startTask(sorter);
 	startTask(flipper);
 
 	while (true) {
