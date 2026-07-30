@@ -1,7 +1,6 @@
 #pragma config(Sensor, S2, touchSensor1, sensorTouch)
 #pragma config(Sensor, S3, touchSensor2, sensorTouch)
 #pragma config(Sensor, S4, lightSensor, sensorLightActive)
-#pragma config(Motor, motorA, motorA, tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  motorB, motorB, tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  motorC, motorC, tmotorNXT, PIDControl, encoder)
 
@@ -14,7 +13,7 @@ int status = 0;
 bool held = false;
 bool reverse = false;
 int encod;
-int light_val = 28;
+int light_val = 24;
 int light;
 
 void moveMotorPos(int position) {
@@ -72,7 +71,7 @@ void moveMotorLight() {
 	bFloatDuringInactiveMotorPWM = false;
 	nMaxRegulatedSpeedNxt = 1000;
 
-	if (light >= 10 && light <= 22) { // detects track
+	if (light >= 10 && light <= 19) { // detects track
 		motor[motorC] = 0;
 		return;
 	}
@@ -89,14 +88,14 @@ void moveMotorLight() {
 		}
 
 		if (diff > 0) {
-			motor[motorC] = 15;
+			motor[motorC] = 40;
 			encod = nMotorEncoder[motorC];
 			reverse = !reverse;
 
 			wait1Msec(1000);
 
 			nMotorEncoderTarget[motorC] = 105;
-			motor[motorC] = -15;
+			motor[motorC] = -40;
 			reverse = !reverse;
 			encod = nMotorEncoder[motorC];
 		}
@@ -104,14 +103,14 @@ void moveMotorLight() {
 
 	else if (light < light_val) {
 		motor[motorC] = 0;
-		wait1Msec(5);
+		wait1Msec(2);
 	}
 
 	while (nMotorRunState[motorC] != runStateIdle) {
 	}
 
 	motor[motorC] = 0;
-	wait1Msec(100);
+	wait1Msec(20);
 	bFloatDuringInactiveMotorPWM = true;
 }
 
@@ -234,39 +233,6 @@ task basket {
 	}
 }
 
-int flipEncode;
-
-// Flips directions every second
-task flipper {
-	while (true) {
-		bFloatDuringInactiveMotorPWM = false;
-		nMaxRegulatedSpeedNxt = 1000;
-		flipEncode = nMotorEncoder[motorA];
-		int diff = -20 - flipEncode;
-
-		nMotorEncoderTarget[motorA] = abs(diff);
-		motor[motorA] = -20;
-
-		while(nMotorRunState[motorA] != runStateIdle) {
-		}
-		motor[motorA] = 0;
-
-		flipEncode = nMotorEncoder[motorA];
-
-		wait1Msec(1000);
-
-		diff = 10 - flipEncode;
-		nMotorEncoderTarget[motorA] = abs(diff);
-		motor[motorA] = 20;
-
-		while(nMotorRunState[motorA] != runStateIdle) {
-		}
-		motor[motorA] = 0;
-
-		wait1Msec(1000);
-		bFloatDuringInactiveMotorPWM = true;
-	}
-}
 
 
 
@@ -274,7 +240,6 @@ task flipper {
 task main() {
 	startTask(basket);
 	startTask(sorter);
-	startTask(flipper);
 
 	while (true) {
 		wait1Msec(100);
